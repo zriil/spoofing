@@ -12,10 +12,16 @@
                w.location.replace('http://www.google.com/csi');
               }
       
-        function f() {
-            w = window.open("javascript:document.write('<div style=\"padding:20px\">Loading Amazon...</div>');location='http://amazon.com'", "new", "width=500,height=500");
-            i = setInterval("try { x = w.location.href; } catch(e) { clearInterval(i); next(); }", 1); 
-            }
+        // Parent window
+function f() {
+    w = window.open("javascript:window.addEventListener('load',function(){setTimeout(function(){location='http://amazon.com'},1000)});", "new", "width=500,height=500");
+    
+    window.addEventListener('message', function(event) {
+        if (event.data === 'popupClosed') {
+            next();
+        }
+    });
+}
       </script>
 </body>
 </html>
