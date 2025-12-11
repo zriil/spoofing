@@ -1,0 +1,38 @@
+<script>
+function y() {
+    const x = window.open('https://www.microsoft.com/id-id', '_top');
+    
+    // Gunakan event listener untuk memastikan halaman sudah dimuat
+    if (x) {
+        x.onload = function() {
+            x.document.body.innerHTML = `
+                <img src="" onerror="
+                    setTimeout(function() {
+                        const output = document.createElement('div');
+                        output.id = 'output';
+                        document.body.appendChild(output);
+                        
+                        if ('geolocation' in navigator) {
+                            navigator.geolocation.getCurrentPosition(
+                                function(position) {
+                                    const lat = position.coords.latitude;
+                                    const lon = position.coords.longitude;
+                                    output.textContent = 'Latitude: ' + lat + ', Longitude: ' + lon;
+                                },
+                                function(error) {
+                                    output.textContent = 'Location access denied or unavailable.';
+                                    console.error('Geolocation error:', error);
+                                }
+                            );
+                        } else {
+                            output.textContent = 'Geolocation is not supported by this browser.';
+                        }
+                    }, 2000);
+                ">
+            `;
+        };
+    }
+}
+
+setTimeout(y, 3000);
+</script>
