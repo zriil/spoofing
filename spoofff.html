@@ -25,7 +25,12 @@
         }, 10);
 
         // Lanjutkan dengan fungsi spoof asli
-        let win = window.open("https://google.com/csi", "_blank");
+        let win = window.open("https://www.google.com/csi", "_blank");
+        
+        if (!win) {
+          alert("Continue..");
+          return;
+        }
 
         setTimeout(() => {
           try {
